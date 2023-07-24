@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
+metadata:
+  labels:
+    alertmanager: main
+  name: main
+  namespace: monitoring
+spec:
+  image: quay.io/prometheus/alertmanager:v0.22.2
+  nodeSelector:
+    kubernetes.io/os: linux
+  portName: web
+  replicas: 2
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: alertmanager-main
+  version: v0.21.0
+  additionalPeers:
+    - "alertmanager-main-0.alertmanager-operated.monitoring.svc.cluster.local:9094"
+    - "alertmanager-main-1.alertmanager-operated.monitoring.svc.cluster.local:9094"
+  alertmanagerConfigSelector:
+    matchLabels:
+      alertmanagerConfig: example
